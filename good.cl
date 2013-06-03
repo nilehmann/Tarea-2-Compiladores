@@ -1,15 +1,18 @@
-class A{
-	a: Int;
+class Main { main() : Int {0 }; };
+
+class A {
+	inky():Int { 1 };
 };
 
-class B inherits A{
-	b: Int;
-	
+class B inherits A {
+a: CACA;
+	binky():String {"hello"};
 };
 
-class C inherits B{
-	c: Int;
-	foo(b: Bool, b:Int): A{
-		b
-	};
+class C {
+	b:B;
+	winky():Int { 
+	 let x:Int <- 1 in  
+
+b@B.inky() };
 };

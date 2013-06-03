@@ -6,6 +6,7 @@ import java_cup.runtime.Symbol;
 
 %%
 
+%public
 %class CoolLexer
 %cup
 %line
