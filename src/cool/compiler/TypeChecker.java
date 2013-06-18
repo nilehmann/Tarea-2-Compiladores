@@ -1,7 +1,6 @@
 package cool.compiler;
+
 import java.util.Iterator;
-
-
 
 public class TypeChecker
 		implements
@@ -12,6 +11,7 @@ public class TypeChecker
 	static final AbstractType string_type = new Type("String");
 	static final AbstractType bool_type = new Type("Bool");
 
+	
 	public TypeChecker(ClassTable ct) {
 		classTable = ct;
 	}
@@ -19,6 +19,7 @@ public class TypeChecker
 	@Override
 	public ListType visit(Classes classes, SymbolTable<String, AbstractType> O,
 			Class_ C) {
+
 		for (Iterator<SingleNode> e = classes.getElements(); e.hasNext();)
 			e.next().accept(this, O, C);
 		return null;
@@ -83,22 +84,27 @@ public class TypeChecker
 	@Override
 	public AbstractType visit(Class_ cl, SymbolTable<String, AbstractType> O,
 			Class_ C) {
+		O = new SymbolTable<String, AbstractType>();
+		O.enterScope();
+		for (attr a : classTable.lookupAttributes(cl.name)) {
+			if (a.name.equals("self"))
+				classTable.semantError(C).println(
+						"'self' cannot be the name of a attribute.");
+			else {
+				AbstractType t = resolveType(a.type_decl, C, null);
+				O.addId(a.name, t);
+			}
+		}
+		O.addId("self", new SelfType(cl.name));
 		cl.features.accept(this, O, cl);
+		O.exitScope();
+
 		return null;
 	}
 
 	@Override
 	public AbstractType visit(method m, SymbolTable<String, AbstractType> O,
 			Class_ C) {
-		// Class Scope
-		O.enterScope();
-		for (attr a : classTable.lookupAttributes(C.name)) {
-			AbstractType t = resolveType(a.type_decl, C, null);
-			O.addId(a.name, t);
-		}
-		O.addId("self", new SelfType(C.name));
-
-		// Parameters Scope
 		O.enterScope();
 
 		for (Iterator<SingleNode> it = m.formals.getElements(); it.hasNext();) {
@@ -125,9 +131,7 @@ public class TypeChecker
 		if (!T2.subType(T0, classTable))
 			classTable.semantError(C).println("Type mismatch");
 
-		O.exitScope(); // Exit parameters
-
-		O.exitScope(); // Exit Class
+		O.exitScope();
 
 		return null;
 	}
@@ -135,23 +139,9 @@ public class TypeChecker
 	@Override
 	public AbstractType visit(attr at, SymbolTable<String, AbstractType> O,
 			Class_ C) {
-		O.enterScope();
-		for (attr a : classTable.lookupAttributes(C.name)) {
-			if (a.name.equals("self"))
-				classTable.semantError(C).println(
-						"'self' cannot be the name of a attribute.");
-			else {
-				AbstractType t = resolveType(a.type_decl, C, "Undefined type "
-						+ a.type_decl + " on attribute declaration.");
-				O.addId(a.name, t);
-			}
-		}
-		O.addId("self", new SelfType(C.name));
 		AbstractType T1 = at.init.accept(this, O, C);
 		if (!T1.subType(new Type(at.type_decl), classTable))
 			classTable.semantError(C).println("Type mismatch");
-
-		O.exitScope();
 
 		return null;
 	}
@@ -345,7 +335,7 @@ public class TypeChecker
 			return new SelfType(C.name);
 		else {
 			if (classTable.getClass(type) == null) {
-				if(errorMessage != null)
+				if (errorMessage != null)
 					classTable.semantError(C).println(errorMessage);
 				return object_type;
 			} else

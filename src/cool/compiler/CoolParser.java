@@ -430,13 +430,13 @@ public class CoolParser extends java_cup.runtime.lr_parser {
     }
 
     public void unrecovered_syntax_error(Symbol cur_token) {
+		omerrs++;
     }
 
 }
 
 /** Cup generated class to encapsulate user supplied action code.*/
 class CUP$CoolParser$actions {
-
  
 
     int curr_lineno() {

@@ -27,7 +27,6 @@ import java.io.PrintStream;
 
 /** Static semantics driver class */
 class Semant {
-
 	/** Reads AST from from console, and outputs the new AST */
 	public static void main(String[] args) {
 		
@@ -38,7 +37,13 @@ class Semant {
 				CoolLexer lexer = new CoolLexer(file);
 				lexer.setFileName(args[i]);
 				CoolParser parser = new CoolParser(lexer);
+				
 				Program result = (Program) parser.parse().value;
+
+				if (parser.omerrs > 0) {
+					System.err.println("Compilation halted due to lex and parse errors");
+					System.exit(1);
+				}
 				
 				ClassTable classTable = new ClassTable(result.classes);
 
