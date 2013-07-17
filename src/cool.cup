@@ -1,4 +1,41 @@
 import java_cup.runtime.*;
+import cool.ast.Branch;
+import cool.ast.Cases;
+import cool.ast.Class_;
+import cool.ast.Classes;
+import cool.ast.Expression;
+import cool.ast.Expressions;
+import cool.ast.Feature;
+import cool.ast.Features;
+import cool.ast.Formal;
+import cool.ast.Formals;
+import cool.ast.Program;
+import cool.ast.Attr;
+import cool.ast.Method;
+import cool.ast.expressions.Assign;
+import cool.ast.expressions.Block;
+import cool.ast.expressions.BoolConst;
+import cool.ast.expressions.Comp;
+import cool.ast.expressions.Cond;
+import cool.ast.expressions.Dispatch;
+import cool.ast.expressions.Divide;
+import cool.ast.expressions.Eq;
+import cool.ast.expressions.IntConst;
+import cool.ast.expressions.IsVoid;
+import cool.ast.expressions.Leq;
+import cool.ast.expressions.Let;
+import cool.ast.expressions.Loop;
+import cool.ast.expressions.Lt;
+import cool.ast.expressions.Mul;
+import cool.ast.expressions.Neg;
+import cool.ast.expressions.New_;
+import cool.ast.expressions.NoExpr;
+import cool.ast.expressions.ObjectId;
+import cool.ast.expressions.Plus;
+import cool.ast.expressions.StaticDispatch;
+import cool.ast.expressions.StringConst;
+import cool.ast.expressions.Sub;
+import cool.ast.expressions.TypeCase;
 
 action code {: 
 
@@ -15,7 +52,7 @@ action code {:
 /*                DONT CHANGE ANYTHING IN THIS SECTION                  */
 
 parser code {:
-    int omerrs = 0;
+    public int omerrs = 0;
 
     public void syntax_error(Symbol cur_token) {
         int lineno = action_obj.curr_lineno();
